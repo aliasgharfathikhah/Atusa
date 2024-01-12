@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import os
 import speedtest
 import cv2
+import speech_recognition as sr
 
 def type(str):
     for i in range(len(str)):
@@ -141,26 +142,40 @@ def System_Operation(string):
     if 'internet speed' in string:
         SpeedtestInternet()
         return False
-    elif 'take photo' in string or 'take selfi' in string:
+    elif 'take a photo' in string or 'take a selfi' in string:
         Taking_Selfie()
         return False
     
     return True
 
+
+r = sr.Recognizer()
+
 while True:
-    text_input = input()
+    with sr.Microphone() as source:
+        
+        Start_Speak('...')
+        
+        audio = r.listen(source)
+
+        try:
+            text_input = r.recognize_google(audio, language='eng-UK')
+            print(text_input)
+            if System_Operation(text_input):        
+                GPT(text_input)         
+        except:
+            Start_Speak('Sorry! I can\'t hear you')
+            text_input = input('Type what you wanted to say : ')
+            if System_Operation(text_input):        
+                GPT(text_input)
     
-    if System_Operation(text_input):        
-        GPT(text_input)
+print("""
+        AAAAAAA     TTTTTTT     U     U     SSSSSSS      AAAAAAA
+        A     A        T        U     U     SSS          A     A
+        AAAAAAA        T        U     U      SSSSS       AAAAAAA
+        A     A        T        U     U         SSS      A     A
+        A     A        T         UUUUU       SSSSSS      A     A  
+""")
 
 
-
-
-# print("""
-#         AAAAAAA     TTTTTTT     U     U     SSSSSSS     AAAAAAA
-#         A     A        T        U     U     SS          A     A
-#         AAAAAAA        T        U     U      SS         AAAAAAA
-#         A     A        T         U   U         SSS      A     A
-#         A     A        T           U         SSSSSS     A     A  
-# """)
 
