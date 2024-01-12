@@ -6,6 +6,8 @@ import sqlite3
 import requests
 from dotenv import load_dotenv
 import os
+import speedtest
+
 
 def type(str):
     for i in range(len(str)):
@@ -104,8 +106,31 @@ def GPT(content):
 
 get_user_name(conn)
 
+def SpeedtestInternet():
+    Start_Speak('A few moments')
+
+    speed = speedtest.Speedtest()
+    download__speed = speed.download()
+    strd = f'{round(download__speed/1_000_000, 2)} Mbps'
+    
+    speed = speedtest.Speedtest()
+    upload__speed = speed.upload()
+    stru = f'{round(upload__speed/1_000_000, 2)} Mbps'
+
+
+    Start_Speak('download speed >')
+    Start_Speak(strd)
+    Start_Speak('Upload speed >')
+    Start_Speak(stru)
+
 while True:
     text_input = input()
+    text_input.lower()
+    if 'internet speed' in text_input:
+        SpeedtestInternet()
+        break
+
+            
     GPT(text_input)
 
 
@@ -118,3 +143,4 @@ while True:
 #         A     A        T         U   U         SSS      A     A
 #         A     A        T           U         SSSSSS     A     A  
 # """)
+
