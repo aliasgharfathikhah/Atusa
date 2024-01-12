@@ -3,11 +3,13 @@ import threading
 import time
 import sys
 import sqlite3
-
+import requests
+from dotenv import load_dotenv
+import os
 
 def type(str):
     for i in range(len(str)):
-        time.sleep(.090)
+        time.sleep(.08)
         print(str[i], end='')
         sys.stdout.flush()
     print()
@@ -70,8 +72,41 @@ def get_user_name(conn):
     else:
         Start_Speak(f"Hello {result[0]}, how can I help you?")
 
+def GPT(content):
+
+    url = "https://api.openai.com/v1/chat/completions"
+
+    message = {
+        'role': 'system',
+        'content': content
+    }
+
+    load_dotenv()
+    secret_key = os.getenv('SECRET-KEY-IN-OPENAI')
+    
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + secret_key
+    }
+
+    data = {
+        "model": "gpt-3.5-turbo-1106",
+        "messages": [message]
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+
+    response_json = response.json()
+
+    message_content = response_json['choices'][0]['message']['content']
+    message_content = message_content.replace('OpenAI', 'ZIG ZAG Company').replace('GPT-3', 'AFZ-1').replace('Assistant', 'Atusa')
+    Start_Speak(message_content)
+
 get_user_name(conn)
 
+while True:
+    text_input = input()
+    GPT(text_input)
 
 
 
@@ -83,4 +118,3 @@ get_user_name(conn)
 #         A     A        T         U   U         SSS      A     A
 #         A     A        T           U         SSSSSS     A     A  
 # """)
-
