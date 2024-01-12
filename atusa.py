@@ -7,7 +7,7 @@ import requests
 from dotenv import load_dotenv
 import os
 import speedtest
-
+import cv2
 
 def type(str):
     for i in range(len(str)):
@@ -123,15 +123,33 @@ def SpeedtestInternet():
     Start_Speak('Upload speed >')
     Start_Speak(stru)
 
+def Taking_Selfie():
+    Start_Speak('Get ready')
+    cap = cv2.VideoCapture(0)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+    ret, frame = cap.read()
+    cv2.imshow('preview', frame)
+    Start_Speak('It looks great')
+    cv2.imwrite('selfie.jpg', frame)
+    cv2.waitKey(0)
+    cap.release()
+    cv2.destroyAllWindows()
+
+def System_Operation(string):
+    string.lower()
+    if 'internet speed' in string:
+        SpeedtestInternet()
+        return False
+    elif 'take photo' in string or 'take selfi' in string:
+        Taking_Selfie()
+        return False
+
 while True:
     text_input = input()
-    text_input.lower()
-    if 'internet speed' in text_input:
-        SpeedtestInternet()
-        break
-
-            
-    GPT(text_input)
+    
+    if System_Operation(text_input):        
+        GPT(text_input)
 
 
 
