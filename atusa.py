@@ -144,6 +144,8 @@ def System_Operation(string):
     elif 'take photo' in string or 'take selfi' in string:
         Taking_Selfie()
         return False
+    
+    return True
 
 while True:
     text_input = input()
