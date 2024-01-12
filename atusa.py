@@ -9,11 +9,20 @@ import os
 import speedtest
 import cv2
 import speech_recognition as sr
+import psutil
+import colorama
+from colorama import Fore
+colorama.init(autoreset=True)
 
 def type(str):
     for i in range(len(str)):
         time.sleep(.08)
-        print(str[i], end='')
+        if str[i].isdigit():
+            print(Fore.GREEN+str[i], end='')
+        elif not str[i].isalpha():
+            print(Fore.RED+str[i], end='')
+        elif str[i].isalpha():
+            print(str[i], end='')
         sys.stdout.flush()
     print()
 
@@ -137,6 +146,21 @@ def Taking_Selfie():
     cap.release()
     cv2.destroyAllWindows()
 
+def Battery_Status():
+    def convertTime(seconds):
+        minutes, seconds = divmod(seconds, 60)
+        hours, minutes = divmod(minutes, 60)
+        return hours, minutes, seconds
+
+    battery = psutil.sensors_battery()
+    hours, minutes, seconds = convertTime(battery.secsleft)
+    
+    if battery.power_plugged:
+        Start_Speak(f'The battery charge is {battery.percent}% and it is connected to charging and there is {hours} hour {minutes} minutes {seconds} seconds left until the battery is empty.')
+    else:
+        Start_Speak(f'The battery charge is {battery.percent}% and it is not connected to the charger, and there is {hours} hour, {minutes} minutes and {seconds} seconds left until the battery is empty.')
+
+
 def System_Operation(string):
     string.lower()
     if 'internet speed' in string:
@@ -144,6 +168,9 @@ def System_Operation(string):
         return False
     elif 'take a photo' in string or 'take a selfi' in string:
         Taking_Selfie()
+        return False
+    elif 'battery status' in string:
+        Battery_Status()
         return False
     
     return True
